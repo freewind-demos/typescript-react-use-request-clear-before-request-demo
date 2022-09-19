@@ -1,6 +1,6 @@
 {
   "scripts": {
-    "start": "vite --open --port 3333"
+    "start": "vite --open --port 3334"
   },
   "dependencies": {
     "react": "17.0.2",
