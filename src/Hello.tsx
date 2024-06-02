@@ -1,17 +1,45 @@
-import React, {FC, useState} from 'react';
-import './Hello.pcss';
-import {Component1} from "./Component1";
-import {Component2} from "./Component2";
+import { useRequest } from 'ahooks';
+import React, { FC, useState } from 'react';
 
 type Props = {};
 
-export const Hello: FC<Props> = ({}) => {
+async function waitSometime(time: number) {
+    return new Promise((resolve) => {
+        setTimeout(() => {
+            resolve(undefined);
+        }, time);
+    });
+}
+
+export const Hello: FC<Props> = ({ }) => {
     const [renderVersion, setRenderVersion] = useState(0);
+
+    const fetchNum1 = useRequest(async () => {
+        await waitSometime(100);
+        return renderVersion;
+    }, {
+        refreshDeps: [renderVersion],
+        onBefore: (a) => {
+            fetchNum1.mutate(undefined);
+        }
+    });
+
+    const fetchNum2 = useRequest(async () => {
+        await waitSometime(2000);
+        return renderVersion;
+    }, {
+        refreshDeps: [renderVersion],
+        onBefore: () => {
+            fetchNum2.mutate(undefined);
+        }
+    });
+
     return <div className={'Hello'}>
         <button onClick={() => setRenderVersion(n => n + 1)}>Re-render ({renderVersion})</button>
         <div>
-            <Component1/>
-            <Component2/>
+            <div>Num1: {fetchNum1.data}</div>
+            <div>Num2: {fetchNum2.data}</div>
+            <div>Num1==Num2: {JSON.stringify(fetchNum1.data === fetchNum2.data)}</div>
         </div>
     </div>;
 }

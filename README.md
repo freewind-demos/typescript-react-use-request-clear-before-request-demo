@@ -1,9 +1,7 @@
-TypeScript React Ahooks useRequest Same Request in Different Components Demo
+TypeScript React "use-request" Clear Before Request Demo
 =================================
 
-当指定了cacheKey, useRequest可以当作远程状态管理来用。
-
-没有指定的话就不行
+有时候当useRequest的dependency改变时，我们希望它之前返回的data还原为空，以免意外参数导致逻辑错误，可以使用 `onBefore: () => fetch.mutate(undefined)` 手动清空
 
 ```
 npm install
